@@ -91,14 +91,14 @@ pub enum ModelResource {
 impl ResourceProvider for ModelResource {
     fn get_local_path(&self) -> Result<PathBuf, RustBertError> {
         match self {
-            ModelResource::Torch(ref resource) => resource.get_local_path(),
+            ModelResource::Torch(resource) => resource.get_local_path(),
             #[cfg(feature = "onnx")]
             ModelResource::ONNX(_) => Err(RustBertError::UnsupportedError),
         }
     }
-    fn get_resource(&self) -> Result<Resource, RustBertError> {
+    fn get_resource(&self) -> Result<Resource<'_>, RustBertError> {
         match self {
-            ModelResource::Torch(ref resource) => resource.get_resource(),
+            ModelResource::Torch(resource) => resource.get_resource(),
             #[cfg(feature = "onnx")]
             ModelResource::ONNX(_) => Err(RustBertError::UnsupportedError),
         }
@@ -2062,40 +2062,40 @@ impl TokenizerOption {
     /// Interface method
     pub fn get_mask_value(&self) -> Option<&str> {
         match self {
-            Self::Bert(ref tokenizer) => {
+            Self::Bert(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::Deberta(ref tokenizer) => {
+            Self::Deberta(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::DebertaV2(ref tokenizer) => {
+            Self::DebertaV2(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::Roberta(ref tokenizer) => {
+            Self::Roberta(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::Bart(ref tokenizer) => {
+            Self::Bart(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::XLMRoberta(ref tokenizer) => {
+            Self::XLMRoberta(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::Albert(ref tokenizer) => {
+            Self::Albert(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::XLNet(ref tokenizer) => {
+            Self::XLNet(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::ProphetNet(ref tokenizer) => {
+            Self::ProphetNet(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::MBart50(ref tokenizer) => {
+            Self::MBart50(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::FNet(ref tokenizer) => {
+            Self::FNet(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
-            Self::Pegasus(ref tokenizer) => {
+            Self::Pegasus(tokenizer) => {
                 Some(MultiThreadedTokenizer::vocab(tokenizer).get_mask_value())
             }
             #[cfg(feature = "hf-tokenizers")]

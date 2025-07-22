@@ -43,19 +43,19 @@ impl LongT5AttentionLayer {
         train: bool,
     ) -> (Tensor, Option<Tensor>, Option<Tensor>, Option<LayerState>) {
         match self {
-            LongT5AttentionLayer::SelfAttention(ref layer) => layer.forward_t(
+            LongT5AttentionLayer::SelfAttention(layer) => layer.forward_t(
                 hidden_states,
                 position_bias,
                 attention_mask,
                 layer_state,
                 train,
             ),
-            LongT5AttentionLayer::Local(ref layer) => {
+            LongT5AttentionLayer::Local(layer) => {
                 let (output, position_bias, attention_weights) =
                     layer.forward_t(hidden_states, attention_mask, position_bias, train);
                 (output, attention_weights, position_bias, None)
             }
-            LongT5AttentionLayer::Global(ref layer) => {
+            LongT5AttentionLayer::Global(layer) => {
                 let (output, position_bias, attention_weights) =
                     layer.forward_t(hidden_states, attention_mask, position_bias, train);
                 (output, attention_weights, position_bias, None)

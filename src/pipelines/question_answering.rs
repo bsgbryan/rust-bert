@@ -375,10 +375,11 @@ impl QuestionAnsweringOption {
                 }
             }
             ModelType::DistilBert => {
-                if let ConfigOption::DistilBert(ref mut config) = model_config {
-                    config.sinusoidal_pos_embds = false;
+                if let ConfigOption::DistilBert(config) = model_config {
+                    let mut updated = config.clone();
+                    updated.sinusoidal_pos_embds = false;
                     Ok(QuestionAnsweringOption::DistilBert(
-                        DistilBertForQuestionAnswering::new(var_store.root(), config),
+                        DistilBertForQuestionAnswering::new(var_store.root(), &updated),
                     ))
                 } else {
                     Err(RustBertError::InvalidConfigurationError(
@@ -1068,7 +1069,7 @@ impl QuestionAnsweringModel {
             .token_ids
             .iter()
             .enumerate()
-            .filter(|(_, &value)| value == self.sep_idx)
+            .filter(|(_, value)| **value == self.sep_idx)
             .map(|(position, _)| position)
             .collect();
 

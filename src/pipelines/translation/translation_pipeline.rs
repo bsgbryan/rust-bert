@@ -1192,11 +1192,11 @@ impl TranslationOption {
     /// Returns the `Tokenizer` for this TranslationOption
     pub fn get_tokenizer(&self) -> &TokenizerOption {
         match self {
-            Self::Marian(ref generator) => generator.get_tokenizer(),
-            Self::T5(ref generator) => generator.get_tokenizer(),
-            Self::MBart(ref generator) => generator.get_tokenizer(),
-            Self::M2M100(ref generator) => generator.get_tokenizer(),
-            Self::NLLB(ref generator) => generator.get_tokenizer(),
+            Self::Marian(generator) => generator.get_tokenizer(),
+            Self::T5(generator) => generator.get_tokenizer(),
+            Self::MBart(generator) => generator.get_tokenizer(),
+            Self::M2M100(generator) => generator.get_tokenizer(),
+            Self::NLLB(generator) => generator.get_tokenizer(),
             #[cfg(feature = "onnx")]
             Self::ONNX(ref generator) => generator.get_tokenizer(),
         }

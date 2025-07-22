@@ -644,7 +644,7 @@
 //! # ;
 //! ```
 //! </details>
-//! &nbsp;  
+//! &nbsp;
 //! <details>
 //! <summary> <b>12. Masked Language Model </b> </summary>
 //!

@@ -157,8 +157,8 @@ impl NormalizationLayer {
 
     pub fn forward(&self, input: &Tensor) -> Tensor {
         match self {
-            NormalizationLayer::LayerNorm(ref layer_norm) => input.apply(layer_norm),
-            NormalizationLayer::NoNorm(ref layer_norm) => input.apply(layer_norm),
+            NormalizationLayer::LayerNorm(layer_norm) => input.apply(layer_norm),
+            NormalizationLayer::NoNorm(layer_norm) => input.apply(layer_norm),
         }
     }
 }

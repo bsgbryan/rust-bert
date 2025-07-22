@@ -1050,8 +1050,8 @@ impl ConversationModel {
         let eos_indices: Vec<usize> = history
             .iter()
             .enumerate()
-            .filter(|(i, &e)| {
-                (e == pad_token)
+            .filter(|(i, e)| {
+                (**e == pad_token)
                     & (*i != start_length - 1)
                     & ((start_length as isize - max_length as isize - *i as isize) < 0)
             })

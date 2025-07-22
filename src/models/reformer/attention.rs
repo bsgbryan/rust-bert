@@ -1237,7 +1237,7 @@ impl AttentionModule {
         train: bool,
     ) -> Result<(Tensor, Option<Tensor>, Option<Tensor>), RustBertError> {
         match self {
-            AttentionModule::LSHSelfAttention(ref attention) => attention.forward_t(
+            AttentionModule::LSHSelfAttention(attention) => attention.forward_t(
                 hidden_states,
                 attention_mask,
                 num_hashes,
@@ -1245,7 +1245,7 @@ impl AttentionModule {
                 layer_state,
                 train,
             ),
-            AttentionModule::LocalSelfAttention(ref attention) => {
+            AttentionModule::LocalSelfAttention(attention) => {
                 let output =
                     attention.forward_t(hidden_states, attention_mask, layer_state, train)?;
                 Ok((output.0, output.1, None))

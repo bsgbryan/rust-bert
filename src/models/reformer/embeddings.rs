@@ -167,10 +167,10 @@ pub enum PositionEmbedding {
 impl PositionEmbedding {
     pub fn forward_t(&self, position_ids: &Tensor, train: bool) -> Tensor {
         match self {
-            PositionEmbedding::AxialPositionEmbeddings(ref embeddings) => {
+            PositionEmbedding::AxialPositionEmbeddings(embeddings) => {
                 embeddings.forward_t(position_ids, train)
             }
-            PositionEmbedding::BasePositionEmbeddings(ref embeddings) => {
+            PositionEmbedding::BasePositionEmbeddings(embeddings) => {
                 embeddings.forward_t(position_ids, train)
             }
         }

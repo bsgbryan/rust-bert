@@ -112,6 +112,8 @@
 //! # ;
 //! ```
 
+use std::convert::TryFrom;
+
 use crate::albert::AlbertForTokenClassification;
 use crate::bert::BertForTokenClassification;
 use crate::common::error::RustBertError;
@@ -185,7 +187,7 @@ impl TokenTrait for Token {
 }
 
 impl ConsolidatableTokens<Token> for Vec<Token> {
-    fn iter_consolidate_tokens(&self) -> ConsolidatedTokenIterator<Token> {
+    fn iter_consolidate_tokens(&self) -> ConsolidatedTokenIterator<'_, Token> {
         ConsolidatedTokenIterator::new(self)
     }
 }
@@ -305,7 +307,7 @@ impl Default for TokenClassificationConfig {
             RemoteResource::from_pretrained(BertConfigResources::BERT_NER),
             RemoteResource::from_pretrained(BertVocabResources::BERT_NER),
             None,
-            false,
+            true,
             None,
             None,
             LabelAggregationOption::First,
@@ -1015,7 +1017,7 @@ impl TokenClassificationModel {
                         if !(mask == Mask::Continuation) {
                             word_idx += 1;
                         }
-                        let token = {
+                        if let Some(token) = {
                             self.decode_token(
                                 &original_chars,
                                 feature,
@@ -1026,8 +1028,9 @@ impl TokenClassificationModel {
                                 position_idx as i64,
                                 word_idx,
                             )
-                        };
-                        example_tokens_map[feature.example_index].push(token);
+                        } {
+                          example_tokens_map[feature.example_index].push(token);
+                        }
                     }
                 }
             });
@@ -1099,7 +1102,11 @@ impl TokenClassificationModel {
         sentence_idx: i64,
         position_idx: i64,
         word_index: u16,
-    ) -> Token {
+    ) -> Option<Token> {
+      let foo = Vec::<Vec<i64>>::try_from(labels).expect("Can't cast Tensor");
+      let length = foo.len() as i64;
+
+      if position_idx.lt(&length) {
         let label_id = labels.int64_value(&[position_idx]);
         let token_id = input_tensor.int64_value(&[sentence_idx, position_idx]);
 
@@ -1117,7 +1124,7 @@ impl TokenClassificationModel {
             }
         };
 
-        Token {
+        let token = Token {
             text,
             score: score.double_value(&[sentence_idx, position_idx, label_id]),
             label: self
@@ -1131,7 +1138,11 @@ impl TokenClassificationModel {
             word_index,
             offset: offsets.to_owned(),
             mask: sentence_tokens.mask[position_idx as usize],
-        }
+        };
+
+        Some(token)
+      }
+      else { None }
     }
 
     fn consolidate_tokens(
@@ -1217,7 +1228,7 @@ impl TokenClassificationModel {
             }
             LabelAggregationOption::Mode => {
                 let counts = tokens.iter().fold(HashMap::new(), |mut m, c| {
-                    let (ref mut count, ref mut score) = m
+                    let (count, score) = m
                         .entry((c.label_index, c.label.as_str()))
                         .or_insert((0, 0.0_f64));
                     *count += 1;

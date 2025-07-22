@@ -131,8 +131,8 @@ impl T5FeedForwardLayer {
 
     pub fn forward_t(&self, hidden_states: &Tensor, train: bool) -> Tensor {
         match self {
-            T5FeedForwardLayer::T5DenseActDense(ref model) => model.forward_t(hidden_states, train),
-            T5FeedForwardLayer::T5DenseGatedActDense(ref model) => {
+            T5FeedForwardLayer::T5DenseActDense(model) => model.forward_t(hidden_states, train),
+            T5FeedForwardLayer::T5DenseGatedActDense(model) => {
                 model.forward_t(hidden_states, train)
             }
         }
